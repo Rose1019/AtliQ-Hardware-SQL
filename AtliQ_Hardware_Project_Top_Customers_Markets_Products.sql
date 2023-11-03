@@ -66,7 +66,7 @@ pre.fiscal_year=dt.fiscal_year
 where dt.fiscal_year= 2021
 limit 1000000;
                                            
-/*SECOND WAY : is to add fiscal_year column , a new column to fact_sales_monthly table*/
+/*SECOND WAY : is to add new column fiscal_year , a new column to fact_sales_monthly table*/
 
 
 select s.date,s.product_code,
@@ -78,8 +78,10 @@ select s.date,s.product_code,
 from fact_sales_monthly s
 join dim_product p 
 using(product_code)
+
 /*join dim_date dt
 on dt.calendar_date=s.date */ ## Remove the xtra join dim_date table, fact_sales_monthly table itself having fiscal_year
+
 join fact_gross_price g 
 on g.product_code=s.product_code AND
    g.fiscal_year=s.fiscal_year
@@ -254,7 +256,7 @@ group by market
 order by Net_Sales_Million DESC
 limit 5;				
 
-											/*TOP CUSTOMERS*/
+			/*TOP CUSTOMERS*/
 select N.market,c.customer,round(sum(Net_Sales/1000000),2) as Net_Sales_Million
 from net_sales N
 join dim_customer c
@@ -302,7 +304,7 @@ limit in_top_n;
 END
 */
 
-											/*TOP N PRODUCT*/
+				/*TOP N PRODUCT*/
 /*Write a stored procedure to get the top n products by net sales for a given year. Use product name without a variant.*/
 
 /*First write the query to fetch top n products*/
@@ -396,7 +398,7 @@ where N.fiscal_year=2021
 group by c.region,c.customer
 )		
 
-/*Need to create a third column which is PCT*/
+/*Need to create a third column which is PERCENTAGE*/
 select *,
 	round((Net_Sales_Million*100)/sum(Net_Sales_Million) over(partition by region),2) as PCT_Net_Sales_Region
 from Net_Sales_Region
@@ -455,19 +457,6 @@ select *
 from top_n_markets_region
 where drnk<=2;
                                        
-
-/*Write a STORED PROCEDURE for getting TOP N products in each division by their SOLD QUANTITY sold*/
-/*in a given year , for FY=2021 (Division,Product,Total_Quantity)*/
-
-
-select 	p.division,
-		p.product,
-		sum(s.sold_quantity) as Total_quantity
-from fact_sales_monthly s 
-join dim_product p 
-on s.product_code=p.product_code
-where s.fiscal_year=2021
-group by p.division;
 
 
 
