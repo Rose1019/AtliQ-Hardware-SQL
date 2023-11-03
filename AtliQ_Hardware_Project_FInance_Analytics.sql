@@ -1,12 +1,7 @@
 										/*FUNCTIONS*/
 
 /*Report for 2021 and Quarter 4*/
-/* Month -DONE
-Product name-DONE
-variant-DONE
-Sold Qty-DONE
-Gross Per item-DONE
-Grice Price total*/
+/* Month,Product name,variant,Sold Qty,Gross Per item,Grice Price total*/
 
 /*Get the Customer code for Croma*/
  
@@ -58,7 +53,7 @@ AND
 get_fiscal_year(date) = 2021;
 
 											/*EXERCISE*/
-/*Report for 2021 and Quarter 4*/
+/*To get the Report for 2021 and Quarter 4*/
 
 select month('2019-09-01');
 
@@ -97,7 +92,7 @@ get_fiscal_year(date) = 2021
 AND
 get_fiscal_quarter(date) ="Q4";
 
-/*to get the product name and the product variant, we need to join the 2 table dim_product*/
+/*to get the product name and the product variant, we need to join the table dim_product*/
 
 select s.date,s.product_code,
 		p.product,p.variant,s.sold_quantity,
@@ -120,10 +115,10 @@ limit 1000000;
 
 						/*GROSS SALES REPORT: TOTAL SALES AMOUNT*/
                         
-/*As a product owner, i need an aggregate monthly Gross sales report for CROMA INDIA customer so that 
-i can track how much sales this particular customer is generating for AtliQ and 
+/*As a product owner, i need to aggregate monthly Gross sales report for CROMA INDIA customer so that 
+i can track how much sales this particular customer is generating for AtliQ Hardware and 
 manage our relations accordingly*/
-/*The report should have 2 columns: Month, Total gross sales amount to CROMA INDIA in this month*/
+/*The report should have 2 columns: Month, Total gross sales amount for CROMA INDIA in this month*/
 
 select s.date,
 		round(sum(g.gross_price*s.sold_quantity),2) as total_gross_Monthly_sales_amount
@@ -185,7 +180,7 @@ group by s.date
 order by s.date ASC;
 
 
-/*Yearly*/
+/*Yearly Gross Sales Report*/
 
 select get_fiscal_year(s.date) as fiscal_year,
        round(sum(s.sold_quantity*g.gross_price),2) as Yearly_Gross_Sales_Amount
@@ -198,7 +193,7 @@ group by get_fiscal_year(s.date)
 order by fiscal_year asc;
 
 
-/*2 customer codes for the same customer name*/
+/*Using STORED PROCEDURE with 2 customer codes for the same customer name*/
 select *
 from dim_customer
 where customer like "%amazon%" and market ='india'; /*90002008,90002016*/
@@ -226,8 +221,8 @@ join fact_gross_price g
 on g.product_code=s.product_code AND 
 g.fiscal_year= get_fiscal_year(s.date)
 where find_in_set(s.customer_code,in_customer_code)>0 --Need to check here, if this customer code is TEXT or not, 
-													--for that we will use a function called FIND_IN_SET().Is s.customer_code is
-                                                    -- present in in_customer_code
+						     --for that we will use a function called FIND_IN_SET().
+                                                    -- Is s.customer_code is present in in_customer_code
 group by s.date
 order by s.date asc;
 END*/
@@ -240,8 +235,7 @@ select find_in_set(90002001,"90002002,90002008");
 /*Create a STORED PROCEDURE that can determine the market badge based on the following logic:
       if total sold quantity >5 million then that market ='Golden'
        Else market='Silver'*/
-/* Input:Market and FY
-INPUT -> India, 2021 -->output: Gold*/
+/* Input:Market and FY*/
 
 /* FOR ALL THE MARKETS*/
 select c.market,sum(s.sold_quantity) as Total_Quantity
@@ -267,39 +261,41 @@ group by c.market;
  /* Create procedure get_market_badge(
 	-- We will always Prefix INPUT variable by IN to indicate the variables are input parameter--
     IN	in_market varchar(45),
-	IN	in_fiscal_year year,
-    -- Want to store Output in a different variable,using with OUT variable
+    IN	in_fiscal_year year,
+   
+-- Want to store Output in a different variable,using with OUT variable
     OUT out_badge varchar(45)
     )
 BEGIN
-		-- To capture the Total Qty into a variable.There is a thing called 'into' and 
-        -- can declare variables in our functions jst like in user defined functions.
+	-- To capture the Total Qty into a variable.There is a thing called 'into' and 
+        -- can declare variables in our functions just like in user defined functions.
 		
-        -- decalre is used to declare a new variable named 'qty' with data typr int and default value 0
+        -- 'declare' is used to declare a new variable named 'qty' with data type int and default value 0
         
-        declare qty int default 0;
+declare qty int default 0;
         
-        -- [LAST]  set defalut market to be India,as when we input no value for market the default value is 
+        -- [LAST STEP]  set defalut market to be India,as when we input no value for market the default value is 
         -- silver as per the If,else condition
         -- So we set the default the market value as India as, the company's HO is in India
         
-        if in_market="" then
-           SET in_market='India';
+if in_market="" then
+        SET in_market='India';
          end if ;  
         
         -- Retrieve Total Quantity for a given Market+Fiscal_Year
-        select 
-				sum(s.sold_quantity) into qty
-		from fact_sales_monthly s 
-		join dim_customer c 
-		using(customer_code)
-		where 
-		get_fiscal_year(s.date)=in_fiscal_year 
+select 
+	sum(s.sold_quantity) into qty
+	from fact_sales_monthly s 
+	join dim_customer c 
+	using(customer_code)
+	where 
+	get_fiscal_year(s.date)=in_fiscal_year 
         and 
         c.market =in_market
-		group by c.market;
+	group by c.market;
         
       -- Determine the Market badge
+
       if qty>5000000 then 
          SET out_badge="Gold";
       else 
