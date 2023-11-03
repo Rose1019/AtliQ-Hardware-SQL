@@ -8,3 +8,5 @@ The problem is, Atliq relies too much on Excel files to keep track of everything
 But they can't completely get rid of Excel because it's essential for analyzing data.  
 
 The Data team from AtliQ build database using MySQL which is free and robust and then created data informed decision with the help of SQL Queries.
+
+## Dataset has 1425706 records, which was given by Codebasics learning platform for the purpose of learning.
