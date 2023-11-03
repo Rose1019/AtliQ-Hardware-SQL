@@ -336,7 +336,7 @@ END
 */
 
 
-									/*WINDONWS FUNCTION*/
+									/*WINDOWS FUNCTION*/
 /*Task is to see a BAR CHART report for FY=2021 for TOP N CUSTOMERS by % NET SALES - NET SALES GLOBAL MARKET SHARE%*/
 
 /*Calculating % here will show error as we cannot use any derived columns.So for that we can use CTE*/
