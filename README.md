@@ -13,6 +13,22 @@ The Data team from AtliQ,build database using MySQL which is free and robust and
 
 Sharing the link to [CodeBasics](https://codebasics.io/)  
 
+-----------------------------------------------------------------------------------------------------------------------------------------
+## Table Details
+
+| Table Name | Description | Column Name |
+| ---------- | ----------- | ----------- |
+| dim_customer | contains customer-related data. | customer_code,customer,platform,channel,market,sub_zone,region. |
+| dim_product | contains product-related data. | product_code,division,segment,category,product,variant. |
+| fact_forecast_monthly | Contains monthly forecasted sales data for each product. | date,fiscal_year,product_code,customer_code,forecast_quantity |
+| fact_freight_cost |Contains monthly freight and other costs. | market,fiscal_year,freight_pct,other_cost_pct |
+| fact_gross_price | contains gross price information for each product | product_code,fiscal_year,gross_price |
+| fact_manufacturing_cost | contains the cost incurred in the production of each product. | product_code,cost_year,manufacturing_cost. |
+| fact_pre_invoice_deductions | contains pre-invoice deductions information for each product |customer_code,fiscal_year,pre_invoice_discount_pct |
+| fact_post_invoice_deductions | contains post-invoice deductions information for each product. | Customer_code,product_code,date,discounts_pct,other_deductions_pct. |
+| fact_sales_monthly | contains monthly sales data for each product. | date,product_code,customer_code,sold_quantity,fiscal_year |
+
+
 ------------------------------------------------------------------------------------------------------------------------------------------
 ## Code - On Finance Insights
 
